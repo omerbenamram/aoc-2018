@@ -14,30 +14,25 @@ fn are_same_letter(a: char, b: char) -> bool {
     a.to_ascii_lowercase() == b.to_ascii_lowercase()
 }
 pub fn part1(polymer: &mut Iterator<Item = char>) -> String {
+    // We create a stack that will represent the final string.
     let mut stack = vec![];
 
-    // We create a stack that will represent the final string.
-    // For each value we want to insert:
-    //  1. We compare it to the top of the stack - if they match, we collapse them both.
-    //  2. Repeat until no need to collapse.
-    //  3. Push the safe char into the stack.
-    fn _polymer_reaction(stack: &mut Vec<char>, feed: &mut Iterator<Item = char>) {
-        if let Some(c) = feed.next() {
-            if let Some(peek) = stack.last() {
-                if have_different_case(c, *peek) & are_same_letter(c, *peek) {
-                    stack.pop().unwrap();
-                    return _polymer_reaction(stack, feed);
-                } else {
-                    stack.push(c);
-                }
+    // Read a letter from the polymer, and peek in the top of the stack.
+    for c in polymer {
+        if let Some(peek) = stack.last() {
+            // polymers react, both die
+            if have_different_case(c, *peek) & are_same_letter(c, *peek) {
+                stack.pop().expect("We have just peeked and there was a letter.");
+                continue;
             } else {
+                // No reaction - ok to push.
                 stack.push(c);
             }
-            return _polymer_reaction(stack, feed);
+        } else {
+            // Stack is empty - safe
+            stack.push(c);
         }
     }
-
-    _polymer_reaction(&mut stack, polymer);
 
     stack.into_iter().collect()
 }
