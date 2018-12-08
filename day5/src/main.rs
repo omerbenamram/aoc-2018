@@ -22,7 +22,9 @@ pub fn part1(polymer: &mut Iterator<Item = char>) -> String {
         if let Some(peek) = stack.last() {
             // polymers react, both die
             if have_different_case(c, *peek) & are_same_letter(c, *peek) {
-                stack.pop().expect("We have just peeked and there was a letter.");
+                stack
+                    .pop()
+                    .expect("We have just peeked and there was a letter.");
                 continue;
             } else {
                 // No reaction - ok to push.
