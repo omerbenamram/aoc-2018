@@ -43,6 +43,7 @@ impl FromStr for GuardAction {
 pub type Day = u32;
 pub type GuardID = i32;
 
+#[derive(Default)]
 pub struct SleepingHabits(HashMap<Day, [bool; 60]>);
 pub struct SleepTracker(HashMap<GuardID, SleepingHabits>);
 
@@ -66,7 +67,7 @@ impl SleepingHabits {
     pub fn total_time_asleep(&self) -> i32 {
         // For each guard, calculate total sleepy minutes
         self.iter()
-            .map(|(_, sleeping_table)| sleeping_table.iter().filter(|b| **b == true).count())
+            .map(|(_, sleeping_table)| sleeping_table.iter().filter(|b| **b).count())
             .sum::<usize>() as i32
     }
 
@@ -76,7 +77,7 @@ impl SleepingHabits {
 
         for sleep_table in self.iter().map(|(_, values)| values) {
             for (i, v) in sleep_table.iter().enumerate() {
-                if *v == true {
+                if *v {
                     asleep_by_minute_total[i] += 1;
                 }
             }
@@ -99,7 +100,7 @@ impl SleepingHabits {
 }
 
 impl SleepTracker {
-    pub fn from_sorted_rows(sorted_rows: &Vec<Row>) -> Result<Self> {
+    pub fn from_sorted_rows(sorted_rows: &[Row]) -> Result<Self> {
         let mut sleep_tracker = HashMap::new();
 
         let mut current_guard_id = None;
@@ -157,7 +158,7 @@ impl Debug for SleepTracker {
                         gurad_id,
                         minutes
                             .iter()
-                            .map(|&b| if b == true { '#' } else { '.' })
+                            .map(|&b| if b { '#' } else { '.' })
                             .collect::<String>()
                     )
                 )?;
@@ -255,7 +256,6 @@ impl<'a> Row<'a> {
         })
     }
 }
-
 #[test]
 fn test_part1() {
     let test_input = "[1518-11-01 00:00] Guard #10 begins shift
