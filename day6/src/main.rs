@@ -64,9 +64,9 @@ impl Grid {
             matrix.push(Vec::with_capacity(sz))
         }
 
-        for i in 0..sz {
-            for j in 0..sz {
-                matrix[i].push('?');
+        for row in matrix.iter_mut().take(sz) {
+            for _ in 0..sz {
+                row.push('?');
             }
         }
 
@@ -92,11 +92,7 @@ impl Grid {
     pub fn size(&self) -> usize {
         self.inner.len()
     }
-
-    pub fn get_value(&mut self, p: &Point) -> char {
-        self.inner[p.y as usize][p.x as usize]
-    }
-
+    
     pub fn set_value(&mut self, p: &Point, v: char) {
         self.inner[p.y as usize][p.x as usize] = v;
     }
