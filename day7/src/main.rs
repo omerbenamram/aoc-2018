@@ -150,6 +150,8 @@ fn part1(graph: &DependencyGraph) -> Result<String> {
     let mut result = String::new();
     let mut visited = HashSet::new();
 
+    // Because we only check the target for it's dependencies,
+    // a dummy node is added to create edges which represent a starting point for the algorithm.
     visited.insert('h');
     let head = graph
         .node_references()
@@ -158,8 +160,7 @@ fn part1(graph: &DependencyGraph) -> Result<String> {
 
     available_steps.extend(graph.edges(head.0));
 
-    // Account for the dummy node ('h');
-    while result.len() < graph.node_count() - 1 {
+    while visited.len() < graph.node_count() {
         while !available_steps.is_empty() {
             debug!("So far (ordered): {}", result);
             debug!("So far done: {:?}", visited);
